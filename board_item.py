@@ -4,19 +4,6 @@ from event_log import EventLog
 from item_status import ItemStatus
 
 class BoardItem:
-    def __init__(self, title: str, due_date: date):
-        self._history = []
-        self._title = title
-        self._due_date = due_date
-        self._status = ItemStatus.OPEN
-        self._history.append(EventLog(f"Item created : '{self.title}'"))
-
-    def history(self):
-        return_str = ""
-        for log_item in self._history:
-            return_str += log_item.info() + os.linesep
-        return return_str
-
     @property
     def status(self):
         return self._status
@@ -26,10 +13,13 @@ class BoardItem:
         return self._due_date
 
     @due_date.setter
-    def due_date(self,due_date):
+    def due_date(self, due_date):
         if due_date < date.today():
             raise ValueError('Due date cant be in the past.')
-        self._history.append(EventLog(f"due_date changed from {self.due_date} to {due_date}"))
+        try:
+            self._history.append(EventLog(f"due_date changed from {self.due_date} to {due_date}"))
+        except AttributeError:
+            pass
         self._due_date = due_date
 
     @property
@@ -37,24 +27,43 @@ class BoardItem:
         return self._title
 
     @title.setter
-    def title(self,title):
+    def title(self, title):
         if len(title) < 5 or len(title) > 30:
             raise ValueError('Illegal title length [5:30]')
-        self._history.append(EventLog(f"title changed from {self.title} to {title}"))
+        try:
+            self._history.append(EventLog(f"Title changed from {self.title} to {title}"))
+        except AttributeError:
+            pass
         self._title = title
+
+    def add_evt(self,evt_string:str):
+        self._history.append(EventLog(evt_string))
+
+    def __init__(self, title: str, due_date: date):
+        self._history = []
+        self.title = title
+        self.due_date = due_date
+        self._status = ItemStatus.OPEN
+        self.add_evt(f"Item created : '{self.title}'")
+
+    def history(self):
+        return_str = ""
+        for log_item in self._history:
+            return_str += log_item.info() + os.linesep
+        return return_str
 
     def revert_status(self):
         if self._status == ItemStatus.previous(self.status):
-            self._history.append(EventLog(f"Can't change status, already at {self._status}"))
+            self.add_evt(f"Can't change status, already at {self._status}")
         else:
-            self._history.append(EventLog(f"Status changed from {self._status} to {ItemStatus.previous(self.status)}"))
+            self.add_evt(f"Status changed from {self._status} to {ItemStatus.previous(self.status)}")
         self._status = ItemStatus.previous(self.status)
 
     def advance_status(self):
         if self._status == ItemStatus.next(self.status):
-            self._history.append(EventLog(f"Can't change status, already at {self._status}"))
+            self.add_evt(f"Can't change status, already at {self._status}")
         else:
-            self._history.append(EventLog(f"Status changed from {self._status} to {ItemStatus.next(self.status)}"))
+            self.add_evt(f"Status changed from {self._status} to {ItemStatus.next(self.status)}")
         self._status = ItemStatus.next(self.status)
 
     def info(self):
