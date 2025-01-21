@@ -6,11 +6,11 @@ from item_status import ItemStatus
 class BoardItem:
     @property
     def status(self):
-        return self._status
+        return self.__status
 
     @property
     def due_date(self):
-        return self._due_date
+        return self.__due_date
 
     @due_date.setter
     def due_date(self, due_date):
@@ -20,11 +20,11 @@ class BoardItem:
             self._history.append(EventLog(f"due_date changed from {self.due_date} to {due_date}"))
         except AttributeError:
             pass
-        self._due_date = due_date
+        self.__due_date = due_date
 
     @property
     def title(self):
-        return self._title
+        return self.__title
 
     @title.setter
     def title(self, title):
@@ -34,7 +34,7 @@ class BoardItem:
             self._history.append(EventLog(f"Title changed from {self.title} to {title}"))
         except AttributeError:
             pass
-        self._title = title
+        self.__title = title
 
     def add_evt(self,evt_string:str):
         self._history.append(EventLog(evt_string))
@@ -43,7 +43,7 @@ class BoardItem:
         self._history = []
         self.title = title
         self.due_date = due_date
-        self._status = ItemStatus.OPEN
+        self.__status = ItemStatus.OPEN
         self.add_evt(f"Item created : '{self.title}'")
 
     def history(self):
@@ -53,18 +53,18 @@ class BoardItem:
         return return_str
 
     def revert_status(self):
-        if self._status == ItemStatus.previous(self.status):
-            self.add_evt(f"Can't change status, already at {self._status}")
+        if self.__status == ItemStatus.previous(self.status):
+            self.add_evt(f"Can't change status, already at {self.__status}")
         else:
-            self.add_evt(f"Status changed from {self._status} to {ItemStatus.previous(self.status)}")
-        self._status = ItemStatus.previous(self.status)
+            self.add_evt(f"Status changed from {self.__status} to {ItemStatus.previous(self.status)}")
+        self.__status = ItemStatus.previous(self.status)
 
     def advance_status(self):
-        if self._status == ItemStatus.next(self.status):
-            self.add_evt(f"Can't change status, already at {self._status}")
+        if self.__status == ItemStatus.next(self.status):
+            self.add_evt(f"Can't change status, already at {self.__status}")
         else:
-            self.add_evt(f"Status changed from {self._status} to {ItemStatus.next(self.status)}")
-        self._status = ItemStatus.next(self.status)
+            self.add_evt(f"Status changed from {self.__status} to {ItemStatus.next(self.status)}")
+        self.__status = ItemStatus.next(self.status)
 
     def info(self):
         return f'{self.title}, [{self.status} | {self.due_date}]'

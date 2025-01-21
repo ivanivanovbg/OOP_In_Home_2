@@ -5,20 +5,20 @@ class ItemStatus:
     DONE = 'Done'
     VERIFIED = 'Verified'
 
-    _order = (OPEN, TODO, IN_PROGRESS, DONE, VERIFIED)
+    __order = (OPEN, TODO, IN_PROGRESS, DONE, VERIFIED)
 
     @classmethod
     def next(cls, current):
-        idx = cls._order.index(current)
-        if idx < len(cls._order) - 1:
-            return cls._order[idx + 1]
+        idx = cls.__order.index(current)
+        if idx < len(cls.__order) - 1:
+            return cls.__order[idx + 1]
         else:
             return current
 
     @classmethod
     def previous(cls, current):
-        idx = cls._order.index(current)
+        idx = cls.__order.index(current)
         if idx > 0:
-            return cls._order[idx - 1]
+            return cls.__order[idx - 1]
         else:
             return current

@@ -24,9 +24,6 @@ anotherItem.advance_status()
 anotherItem.advance_status()
 print(anotherItem.history())
 
-item = BoardItem('Refactor this mess', add_days_to_now(2))
-anotherItem = BoardItem('Dont refactor anything',  add_days_to_now(2))
-
 board = Board()
 board.add_item(item)
 board.add_item(anotherItem)
@@ -36,6 +33,8 @@ board.add_item(item) # nothing happens
 
 print(board.count) # 2
 # If val_err is True then throw an error
-board.add_item(item,True)
-board.add_item(anotherItem,True)
-board.add_item(item,True)
+val_err = False
+board.add_item(item,val_err)
+board.add_item(anotherItem,val_err)
+board.add_item(item,val_err)
+

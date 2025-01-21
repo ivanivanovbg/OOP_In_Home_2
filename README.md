@@ -34,10 +34,11 @@ print(item.info()) # Status: Open
 We can solve the issue with the **status** attribute by restricting who can access it.
 
 The "restricting" is done by **convention** - by prefixing attributes or methods with _ (underscore), we warn unfamiliar developers about using that attribute/method from outside the class.
+
 ```python
 def __init__(self, title: str, due_date: date):
     # other code
-    self._status = ItemStatus.OPEN
+    self.__status = ItemStatus.OPEN
 ```
 
 To let the outside code read this value, we can create a `@property getter`:
@@ -62,13 +63,14 @@ You can use `@property setters` the perform the validations:
 ```python
 @property
 def title(self):
-    return self._title
+    return self.__title
+
 
 @title.setter
 def title(self, value):
     # perform the necessary validation
 
-    self._title = value
+    self.__title = value
 ```
 
 After the changes, test with the following code:
@@ -99,9 +101,9 @@ An EventLog instance records an event that took place at a specific time. We can
 ```python
 def __init__(self, description: str):
     # validate that description has some meaningful value (not empty)
-        
-    self._description = # initialize
-    self._timestamp = # initialize
+
+    self.__description =  # initialize
+    self.__timestamp =  # initialize
 ```
 
 ### Properties
